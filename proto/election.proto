@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+option go_package = "bsc/src/proto";
+
+package proto;
+
+service BulletinBoard {
+  rpc Setup (SetupRequest) returns (SetupReply) {}
+  rpc Register(stream Commit) returns (RegisterReply) {}
+  rpc Vote (Ballot) returns (VoteReply) {}
+  rpc GetParameters (ParameterRequest) returns (ParameterReply) {}
+  rpc GetCommit (GetCommitRequest) returns (Commit) {}
+  rpc GetBallots (BallotsRequest) returns (stream Ballot) {}
+}
+
+service Registrar {
+    rpc Register (Commit) returns (CommitReply) {}
+}
+
+service Tallier {
+  rpc Setup (Keypair) returns (SetupReply) {}
+  rpc Tally (TallyRequest) returns (TallyReply) {}
+}
+
+service VotingServer {
+  rpc Setup (Keypair) returns (SetupReply) {}
+  rpc Authenticate (AuthenticationRequest) returns (AuthenticationReply) {}
+}
+
+message RegisterReply {}
+
+message ParameterRequest {}
+
+message SetupReply {}
+
+message VoteReply {}
+
+message BallotsRequest {}
+
+message TallyRequest {}
+
+message AuthenticationReply {}
+
+message TallyReply {
+  uint32 winner = 1;
+}
+
+message Keypair {
+  bytes public = 1;
+  bytes private = 2;
+}
+
+message AuthenticationRequest {
+  string id = 1;
+}
+
+message SetupRequest {
+  bytes generator = 1;
+  bytes prime = 2;
+  bytes tallierKey = 3;
+  bytes votingserverKey = 4;
+  repeated uint32 candidates = 5;
+}
+
+message Commit {
+  string id = 1;
+  string com = 2;
+}
+
+message CommitReply {
+  string id = 1;
+}
+
+message ParameterReply {
+  bytes generator = 1;
+  bytes prime = 2;
+  bytes tallierKey = 3;
+  bytes votingserverKey = 4;
+  repeated uint32 candidates = 5;
+}
+
+message GetCommitRequest {
+  string id = 1;
+}
+
+message Ballot {
+  string id = 1;
+  uint32 candidate = 2;
+}
